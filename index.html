@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Good Quest</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- <link rel="baseRadioLegendStyle" href="styles/main.css"> -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    html, body, #map { 
+        height: 95%; margin: 1%; width: 95%; margin:auto; border: 5px solid #b1eeab;
+        border-radius: 8px;
+    }
+        #basemap_options {
+            position: absolute;
+            top: 10px;
+            right: 30px;
+            background: rgb(217, 212, 212);
+            padding: 10px;
+            z-index: 1000;
+            box-shadow:0 8px 16px 0 rgba(0,0,0,0.6);
+            border: 2px solid #04AA6D;
+            background-color:Tomato;
+            opacity: 70%;
+            width: 300px;
+            border-radius: 8px;
+            margin :autofill;
+            display: inline-block;
+        }
+        .info-panel {
+            position: absolute;
+            bottom: 125px;
+            left: 100px;
+            background: white;
+            background-color:#b1eeab;
+            opacity: 70%;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-width: 250px;
+        }
+        .photo-popup {
+            text-align: center;
+            max-width: 350px;
+        }
+        
+        .photo-popup img {
+            width: 320px;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 9999; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.9); 
+        }
+        .modal-content {
+            margin: auto; 
+            display: block; 
+            max-width: 90%; 
+            max-height: 90%; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+        }
+        .close { 
+            position: absolute; 
+            top: 20px; 
+            right: 35px; 
+            color: #f1f1f1; 
+            font-size: 40px; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+
+        /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 10000; /* Sit on top of the map/other content */
+        padding-top: 100px; /* Location of the box (top) */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    }
+
+    /* Modal Content (Image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        max-height: 80%; /* Prevents image from running off screen on large images */
+    }
+
+    /* Caption of Modal Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation */
+    .modal-content, #caption {
+        -webkit-animation-name: zoom;
+        -webkit-animation-duration: 0.6s;
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    @-webkit-keyframes zoom {
+        from {-webkit-transform:scale(0)}
+        to {-webkit-transform:scale(1)}
+    }
+
+    @keyframes zoom {
+        from {transform:scale(0)}
+        to {transform:scale(1)}
+    }
+
+    /* The Close Button */
+
+    .close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .close:hover,
+    .close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* 100% Image Width on Smaller Screens */
+    @media only screen and (max-width: 700px){
+        .modal-content {
+            width: 100%;
+    }
+    }
+
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="basemap_options">
+        <h3> Choose your Basemap</h3>
+        <input type="radio" id="openstreet" name="basemaps" onchange="radioIfElse()" value="openstreet">
+        <label for="openstreet">OpenStreetMap</label><br>
+        <input type="radio" id="satellite" name="basemaps" onchange="radioIfElse()" value="satellite">
+        <label for="satellite">Satellite Hybrid map</label><br>
+        <input type="radio" id="topo" name="basemaps" onchange="radioIfElse()" value="topo">
+        <label for="topo">Topomap</label><br>
+    </div>
+    
+    <div class="info-panel">
+        <h3>📷 Geotagged Photos</h3>
+        <p><strong>Total:</strong> <span id="totalPhotos"></span></p>
+        <p style="font-size: 12px; color: #666;">Click points to view photos</p>
+    </div>
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+    <script src="basemapRadiobutton.js"></script>
+    <!-- <script src="Modal.js"></script> -->
+    <script src="fetchPoint__.js"></script>
+   
+        
+      
+
+    </script>
+</body>
+</html> 
