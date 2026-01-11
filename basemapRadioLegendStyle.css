@@ -1,0 +1,18 @@
+/* This CSS is for styling basemap's  */
+html, body, #map { height: 100%; margin: 80; }
+        #basemap_options {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px;
+            z-index: 1000;
+            box-shadow:0 8px 16px 0 rgba(0,0,0,0.6);
+            border: 2px solid #04AA6D;
+            background-color:Tomato;
+            opacity: 70%;
+            width: 300px;
+            border-radius: 8px;
+            margin : autofill;
+            display: inline-block;
+        }
